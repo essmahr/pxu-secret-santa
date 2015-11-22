@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  if user
+    h1 you're logged in!
+    a(href='/logout')
+      small Logout
+  else
+    a(href='/auth/slack') login
