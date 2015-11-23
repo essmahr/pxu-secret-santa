@@ -12,7 +12,7 @@ var SlackStrategy = require('passport-slack').Strategy;
 var cookieSession = require('cookie-session');
 // var favicon = require('serve-favicon');
 
-var db = require('monk')(process.env.MONGOLAB_URI || process.env.LOCAL_DB_URI);
+var db = require('./db');
 
 var routes = require('./routes/index');
 
@@ -51,30 +51,29 @@ passport.use(new SlackStrategy({
 
     // find or create user
     // TODO: error handling
-    users.findAndModify({
+    users.findOne({
       query: {
-        SlackId: profile.id
+        slackId: profile.id
       },
       update: {
         $set: {
-          accessToken:  accessToken
+          accessToken: accessToken
         }
       }
     },
     function(err, user) {
-      console.log(profile);
       if (user) {
         console.log('this user already exists! Logging in.');
-        return done(null, user);
+        return done(err, user);
       } else {
         users.insert({
-          SlackId: profile.id,
+          slackId: profile.id,
           accessToken: accessToken
         },
         function(err, user) {
           if (err) console.log(err);
           console.log('this user is new! Logging in.');
-          return done(null, user);
+          return done(err, user);
         });
       }
     });

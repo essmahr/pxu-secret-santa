@@ -6,7 +6,7 @@ block content
     each user in users
       .form-field
         label.form-label
-          input.input-checkbox(type="checkbox", name="users[#{user.id}]" checked)
+          input.input-checkbox(type="checkbox", name='users', value=user.slackId, checked=user.participating)
           span.form-label-text
             if user.real_name
               = user.real_name
