@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h2 Who is part of the secret santa?
+  form.form-user-select(action="/settings", method="post")
+    each user in users
+      .form-field
+        label.form-label
+          input.input-checkbox(type="checkbox", name="users[#{user.id}]" checked)
+          span.form-label-text
+            if user.real_name
+              = user.real_name
+            else
+              = user.name
+    button(type="submit") Save

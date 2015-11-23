@@ -50,12 +50,28 @@ passport.use(new SlackStrategy({
     var users = db.get('users');
 
     // find or create user
-    users.find({SlackId: profile.id}, function(err, user) {
+    // TODO: error handling
+    users.findAndModify({
+      query: {
+        SlackId: profile.id
+      },
+      update: {
+        $set: {
+          accessToken:  accessToken
+        }
+      }
+    },
+    function(err, user) {
+      console.log(profile);
       if (user) {
         console.log('this user already exists! Logging in.');
         return done(null, user);
       } else {
-        users.insert({SlackId: profile.id}, function(err, user) {
+        users.insert({
+          SlackId: profile.id,
+          accessToken: accessToken
+        },
+        function(err, user) {
           if (err) console.log(err);
           console.log('this user is new! Logging in.');
           return done(null, user);
