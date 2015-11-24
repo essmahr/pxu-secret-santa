@@ -97,13 +97,4 @@ router.get('/fetch-users', function(req, res) {
   });
 });
 
-// list user JSON, for debugging only
-router.get('/users', function(req, res) {
-  var userCollection = db.get('users');
-  userCollection.find({}, function(err, users){
-    res.json(users);
-  });
-});
-
-
 module.exports = router;

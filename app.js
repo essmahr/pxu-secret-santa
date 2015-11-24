@@ -14,7 +14,8 @@ var cookieSession = require('cookie-session');
 
 var db = require('./db');
 
-var routes = require('./routes/index');
+var index = require('./routes/index');
+var users = require('./routes/users');
 
 var app = express();
 
@@ -85,17 +86,21 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(user, done) {
-  done(null, user);
+  db.get('users').findById(user._id, function (err, user) {
+    done(err, user);
+  });
 });
 
 // attach user var to every request so we can access it in the templates
 app.use(function(req, res, next){
+  // console.log(req.user);
   res.locals.user = req.user;
   next();
 });
 
 // set up routes
-app.use('/', routes);
+app.use('/', index);
+app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
