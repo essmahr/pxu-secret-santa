@@ -2,7 +2,7 @@ extends layout
 
 block content
   h2 Who is part of the secret santa?
-  form.form-user-select(action="/settings", method="post")
+  form.form-user-select(action="/admin/update", method="post")
     each user in users
       .form-field
         label.form-label
