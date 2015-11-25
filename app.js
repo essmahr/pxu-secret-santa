@@ -57,7 +57,7 @@ passport.use(new SlackStrategy({
     if (profile._json.team_id === process.env.SLACK_TEAM_ID) {
       // find or create user
       // TODO: error handling
-      users.findOne({
+      users.findAndModify({
         query: {
           slackId: profile.id
         },
@@ -71,8 +71,9 @@ passport.use(new SlackStrategy({
         if (user) {
           if (!user.participating && !user.optedOut) {
             return done(null, false, { message: 'Sorry, You aren\'t participating in this Secret Santa. (If you think this is an error, let someone know)'});
+          } else {
+            return done(err, user);
           }
-          return done(err, user);
         } else {
           users.insert({
             slackId: profile.id,

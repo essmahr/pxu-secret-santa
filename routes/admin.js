@@ -53,10 +53,15 @@ router.get('/fetch-users', function(req, res) {
     if (users) {
       users.forEach(function(user, index) {
 
+        if (user.is_bot) return;
+
+        var firstName = user.profile.first_name ? user.profile.first_name : user.name;
+        var fullName  = user.profile.first_name ? user.profile.real_name  : user.name;
+
         // properties that are safe to be updated/overwritten
         var setOnUpdate = {
-          name: user.name,
-          real_name: user.real_name,
+          first_name: firstName,
+          full_name: fullName,
           profilePic: user.profile.image_512
         }
 
