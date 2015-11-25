@@ -17,15 +17,33 @@
   text-transform: uppercase;
 }
 
-.welcome-middle,
-.welcome-lower {
+.welcome-text {
   font-family: $sans;
-  font-size: 60px;
+  font-size: 80px;
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: 0.05em;
-  text-shadow: 1px 1px 0 #fff, 2px 2px 0 #fff, 3px 3px #aaa;
+  text-shadow: 1px 1px 0 #fff,
+               2px 2px 0 #fff,
+               3px 3px #fff,
+               4px 4px #ccc;
   text-transform: uppercase;
+
+  span {
+    display: inline-block;
+
+    &:nth-child(odd) { color: $green; }
+
+    &:nth-child(even) { color: $red; }
+
+    &:nth-child(3n) { transform: translateY(-4px); }
+
+    &:nth-child(3n + 1) { transform: translateY(4px); }
+
+    &:nth-child(5n) { transform: rotate(3deg); }
+
+    &:nth-child(5n + 1) { transform: rotate(-3deg); }
+  }
 }
 
 .welcome-subheader {
@@ -39,17 +57,21 @@
 }
 
 .welcome-blurb {
-  font-size: 14px;
+  max-width: 400px;
+  margin: 180px auto;
+  font-size: 18px;
   font-weight: normal;
-  color: #666;
+  color: #333;
   text-align: center;
 }
 
+
 .question {
-  margin: 40px 0;
+  margin: 60px 0 40px;
   font-family: $sans;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 500;
+  color: $green;
   text-align: center;
 }
 
@@ -63,8 +85,6 @@
     color: #888;
     border-color: #ccc;
 
-    &:hover {
-      border-color: darken(#ccc, 5%);
-    }
+    &:hover { border-color: darken(#ccc, 5%); }
   }
 }
