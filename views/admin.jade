@@ -7,9 +7,5 @@ block content
       .form-field
         label.form-label
           input.input-checkbox(type="checkbox", name='users', value=user.slackId, checked=user.participating)
-          span.form-label-text
-            if user.real_name
-              = user.real_name
-            else
-              = user.name
+          span.form-label-text= user.full_name
     button(type="submit") Save
