@@ -23,6 +23,7 @@
     "express": "~4.13.1",
     "jade": "^1.9.1",
     "lodash": "^3.10.1",
+    "mongodb": "^2.0.49",
     "monk": "^1.0.1",
     "morgan": "~1.6.1",
     "normalize-scss": "^4.0.2",
