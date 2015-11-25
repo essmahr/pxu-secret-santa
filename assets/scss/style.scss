@@ -1,0 +1,16 @@
+@import "normalize";
+
+$serif: "Source Serif Pro", serif;
+$sans: "Poppins", sans-serif;
+
+%clearfix {
+  &:after {
+    display: table;
+    clear: both;
+    content: "";
+  }
+}
+
+@import "global";
+@import "login";
+@import "welcome";

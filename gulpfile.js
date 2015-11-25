@@ -3,6 +3,9 @@
 var gulp = require('gulp');
 var browserSync = require('browser-sync');
 var nodemon = require('gulp-nodemon');
+var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
+var prefix = require('gulp-autoprefixer');
 
 // we'd need a slight delay to reload browsers
 // connected to browser-sync after restarting nodemon
@@ -62,7 +65,19 @@ gulp.task('js',  function () {
     //.pipe(gulp.dest('...'));
 });
 
-gulp.task('css', function () {
+gulp.task('sass', function () {
+  return gulp.src('assets/scss/**/*.scss')
+    .pipe(sourcemaps.init())
+    .pipe(sass({outputStyle: 'compact'}).on('error', sass.logError))
+    .pipe(prefix({
+      browsers: ['last 2 versions'],
+      cascade: false
+    }))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('public/stylesheets'));
+})
+
+gulp.task('css', function() {
   return gulp.src('public/**/*.css')
     .pipe(browserSync.reload({ stream: true }));
 })
@@ -72,6 +87,7 @@ gulp.task('bs-reload', function () {
 });
 
 gulp.task('default', ['browser-sync'], function () {
+  gulp.watch('assets/scss/**/*.scss', ['sass']);
   gulp.watch('public/**/*.js',   ['js', browserSync.reload]);
   gulp.watch('public/**/*.css',  ['css']);
   gulp.watch('views/**/*.jade', ['bs-reload']);

@@ -1,0 +1,70 @@
+.welcome-header {
+  margin-bottom: 60px;
+}
+
+.welcome-heading {
+  margin: 100px 0 8px;
+  font-weight: normal;
+  text-align: center;
+}
+
+.welcome-upper {
+  margin-bottom: 10px;
+  font-family: $serif;
+  font-size: 16px;
+  font-weight: normal;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+}
+
+.welcome-middle,
+.welcome-lower {
+  font-family: $sans;
+  font-size: 60px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  text-shadow: 1px 1px 0 #fff, 2px 2px 0 #fff, 3px 3px #aaa;
+  text-transform: uppercase;
+}
+
+.welcome-subheader {
+  margin: 0 0 60px;
+  font-family: $serif;
+  font-size: 16px;
+  font-weight: normal;
+  letter-spacing: 0.5em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.welcome-blurb {
+  font-size: 14px;
+  font-weight: normal;
+  color: #666;
+  text-align: center;
+}
+
+.question {
+  margin: 40px 0;
+  font-family: $sans;
+  font-size: 20px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.choice-button {
+  display: block;
+  width: 300px;
+  padding: 14px 30px;
+  margin: 0 auto 20px;
+
+  &.no {
+    color: #888;
+    border-color: #ccc;
+
+    &:hover {
+      border-color: darken(#ccc, 5%);
+    }
+  }
+}

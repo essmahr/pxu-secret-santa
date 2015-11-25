@@ -7,7 +7,8 @@ var db = require('../db');
 //------------ Homepage ------------//
 
 router.get('/', function(req, res, next) {
-  res.render('index');
+  var bodyClass = req.user ? 'authed' : 'not-authed';
+  res.render('index', {bodyClass: bodyClass});
 });
 
 //------------ Authentication ------------//

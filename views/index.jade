@@ -7,9 +7,6 @@ block content
       strong= user.givingTo
       a(href="/users/unassign") unassign me
     else
-      a(href="/users/assign") assign me
-    div
-      a(href='/logout')
-        small Logout
+      include ../snippets/welcome.jade
   else
-    a(href='/auth/slack') login
+    a.button.login(href='/auth/slack') login
