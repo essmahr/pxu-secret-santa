@@ -9,7 +9,7 @@ var db = require('../db');
  */
 router.get('/', function(req, res) {
   var userCollection = db.get('users');
-  userCollection.find({}, function(err, users){
+  userCollection.find({slackId: {$ne: req.user.slackId}}, function(err, users){
     if (users) {
       res.render('admin', {users: users});
     } else {
