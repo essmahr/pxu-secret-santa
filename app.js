@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var SlackStrategy = require('passport-slack').Strategy;
 var cookieSession = require('cookie-session');
+var flash = require('connect-flash');
 // var favicon = require('serve-favicon');
 
 var db = require('./db');
@@ -40,45 +41,53 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(flash());
 
 // passport config
 passport.use(new SlackStrategy({
     clientID: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
     scope: ['channels:read', 'users:read'],
-    callbackURL: '/auth/slack/callback'
+    callbackURL: '/auth/slack/callback',
+    team: process.env.SLACK_TEAM_ID
   },
   function(accessToken, refreshToken, profile, done) {
     var users = db.get('users');
 
-    // find or create user
-    // TODO: error handling
-    users.findOne({
-      query: {
-        slackId: profile.id
-      },
-      update: {
-        $set: {
-          accessToken: accessToken
-        }
-      }
-    },
-    function(err, user) {
-      if (user) {
-        console.log('this user already exists! Logging in.');
-        return done(err, user);
-      } else {
-        users.insert({
-          slackId: profile.id,
-          accessToken: accessToken
+    if (profile._json.team_id === process.env.SLACK_TEAM_ID) {
+      // find or create user
+      // TODO: error handling
+      users.findOne({
+        query: {
+          slackId: profile.id
         },
-        function(err, user) {
-          if (err) console.log(err);
-          console.log('this user is new! Logging in.');
+        update: {
+          $set: {
+            accessToken: accessToken
+          }
+        }
+      },
+      function(err, user) {
+        if (user) {
+          if (!user.participating && !user.optedOut) {
+            return done(null, false, { message: 'Sorry, You aren\'t participating in this Secret Santa. (If you think this is an error, let someone know)'});
+          }
           return done(err, user);
-        });
-      }
-    });
+        } else {
+          users.insert({
+            slackId: profile.id,
+            accessToken: accessToken
+          },
+          function(err, user) {
+            if (err) console.log(err);
+            console.log('this user is new! Logging in.');
+            return done(err, user);
+          });
+        }
+      });
+    } else {
+      return done(null, false, { message: 'Sorry, only members of the Pixel Union team can participate.' });
+    }
   }
 ));
 

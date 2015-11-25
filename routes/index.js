@@ -8,14 +8,20 @@ var db = require('../db');
 
 router.get('/', function(req, res, next) {
   var bodyClass = req.user ? 'authed' : 'not-authed';
-  res.render('index', {bodyClass: bodyClass});
+  res.render('index', {
+    bodyClass: bodyClass,
+    message: req.flash('error')
+  });
 });
 
 //------------ Authentication ------------//
 
 router.get('/auth/slack', passport.authenticate('slack'));
 
-router.get('/auth/slack/callback', passport.authenticate('slack', {failureRedirect: '/'}), function(req, res) {
+router.get('/auth/slack/callback', passport.authenticate('slack', {
+    failureRedirect: '/',
+    failureFlash : true
+  }), function(req, res) {
   res.redirect('/');
 });
 
