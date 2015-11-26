@@ -30,4 +30,20 @@ router.get('/logout', function(req, res) {
   res.redirect('/');
 });
 
+//------------ Making decisions ------------//
+
+router.get('/accept', function(req, res) {
+  var userCollection = db.get('users');
+
+  userCollection.findAndModify({
+    query: { _id: req.user._id },
+    update: { $set: { optedIn: true } }
+  },
+  function(err, user) {
+    if (err) console.log(err);
+
+    res.render('accept');
+  });
+});
+
 module.exports = router;
