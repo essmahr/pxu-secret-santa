@@ -3,11 +3,12 @@ var passport = require('passport');
 var router = express.Router();
 var SlackApi = require('../models/SlackApi');
 var db = require('../db');
+var isAuthenticated = require('../isAuthenticated');
 
 /**
  * Simple admin view to administer who's allowed to participate
  */
-router.get('/', function(req, res) {
+router.get('/', isAuthenticated, function(req, res) {
   var userCollection = db.get('users');
   userCollection.find({slackId: {$ne: req.user.slackId}}, function(err, users){
     if (users) {
@@ -22,7 +23,7 @@ router.get('/', function(req, res) {
  * updating above settings
  * TODO: there is maybe a better way than two updates, maybe not
  */
-router.post('/update', function(req, res) {
+router.post('/update', isAuthenticated, function(req, res) {
   var userCollection = db.get('users');
   var participants = req.body.users;
 
@@ -46,7 +47,7 @@ router.post('/update', function(req, res) {
 /**
  * populate DB with Slack users
  */
-router.get('/fetch-users', function(req, res) {
+router.get('/fetch-users', isAuthenticated, function(req, res) {
   var userCollection = db.get('users');
   var slack = new SlackApi(req.user.accessToken);
   slack.getUsers(function(err, users) {

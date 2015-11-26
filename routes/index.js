@@ -3,6 +3,7 @@ var passport = require('passport');
 var router = express.Router();
 var SlackApi = require('../models/SlackApi');
 var db = require('../db');
+var isAuthenticated = require('../isAuthenticated');
 
 //------------ Homepage ------------//
 
@@ -32,7 +33,7 @@ router.get('/logout', function(req, res) {
 
 //------------ Making decisions ------------//
 
-router.get('/accept', function(req, res) {
+router.get('/accept', isAuthenticated, function(req, res) {
   var userCollection = db.get('users');
 
   userCollection.findAndModify({
@@ -43,6 +44,23 @@ router.get('/accept', function(req, res) {
     if (err) console.log(err);
 
     res.render('accept');
+  });
+});
+
+router.get('/decline', isAuthenticated, function(req, res) {
+  var userCollection = db.get('users');
+
+  userCollection.findAndModify({
+    query: { _id: req.user._id },
+    update: { $set: {
+      optedOut: true,
+      participating: false
+    } }
+  },
+  function(err, user) {
+    if (err) console.log(err);
+
+    res.render('decline');
   });
 });
 

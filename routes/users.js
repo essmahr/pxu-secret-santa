@@ -3,13 +3,14 @@ var passport = require('passport');
 var router = express.Router();
 var SlackApi = require('../models/SlackApi');
 var db = require('../db');
+var isAuthenticated = require('../isAuthenticated');
 
 var userCollection = db.get('users');
 
 /**
  * list all users in DB, for debugging
  */
-router.get('/list', function(req, res) {
+router.get('/list', isAuthenticated, function(req, res) {
   userCollection.find({}, function(err, users){
     res.json(users);
   });
@@ -18,7 +19,7 @@ router.get('/list', function(req, res) {
 /**
  * assign a santa person to a person
  */
-router.get('/assign', function(req, res) {
+router.get('/assign', isAuthenticated, function(req, res) {
 
   var query = {
     slackId: { $ne: req.user.slackId }, // not themselves
@@ -53,7 +54,7 @@ router.get('/assign', function(req, res) {
  * unassign a santa person from a person
  * (dev only)
  */
-router.get('/unassign', function(req, res) {
+router.get('/unassign', isAuthenticated, function(req, res) {
 
   userCollection.findAndModify({
     query: { _id: req.user._id },

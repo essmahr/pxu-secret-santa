@@ -54,6 +54,8 @@ passport.use(new SlackStrategy({
   function(accessToken, refreshToken, profile, done) {
     var users = db.get('users');
 
+    // console.log(profile);
+
     if (profile._json.team_id === process.env.SLACK_TEAM_ID) {
       // find or create user
       // TODO: error handling
