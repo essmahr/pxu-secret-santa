@@ -69,7 +69,8 @@ router.get('/fetch-users', function(req, res) {
         var setOnInsert = {
           slackId: user.id,
           participating: true,
-          optedOut: false
+          optedOut: false,
+          fetched: true
         }
 
         userCollection.findAndModify(

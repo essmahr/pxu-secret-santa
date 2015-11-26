@@ -69,7 +69,7 @@ passport.use(new SlackStrategy({
       },
       function(err, user) {
         if (user) {
-          if (!user.participating && !user.optedOut) {
+          if (user.fetched && !user.participating && !user.optedOut) {
             return done(null, false, { message: 'Sorry, You aren\'t participating in this Secret Santa. (If you think this is an error, let someone know)'});
           } else {
             return done(err, user);
