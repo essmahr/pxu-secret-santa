@@ -2,10 +2,10 @@ extends layout
 
 block content
   if user
+    include ../snippets/heading.jade
+
     if user.givingTo
-      h1 you've been assigned a person!
-      strong= user.givingTo
-      a(href="/users/unassign") unassign me
+      include ../snippets/already-assigned.jade
     else
       include ../snippets/welcome.jade
   else

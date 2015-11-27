@@ -7,7 +7,8 @@ html
   body(class=bodyClass)
     include ../snippets/flash-messages.jade
     .page-wrap
-      block content
+      .page-wrap-inner
+        block content
 
     if user
       a.button.logout(href='/logout') Logout

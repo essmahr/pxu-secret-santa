@@ -55,19 +55,28 @@ router.get('/assign', isAuthenticated, function(req, res) {
  * (dev only)
  */
 router.get('/unassign', isAuthenticated, function(req, res) {
+  var wasGivingTo = req.user.givingTo;
 
+  // remove giver relationship
   userCollection.findAndModify({
     query: { _id: req.user._id },
     update: { $unset: { givingTo: "" } }
   },
   function(err, user) {
     if (err) console.log(err);
-    if (user.length === 0) console.log('something went wrong');
+    console.log('giver unassigned');
 
-    req.login(user, function(err) {
-      if (err) return next(err)
-      console.log('user unassigned');
-      res.redirect('/');
+    // remove receiver relationship
+    userCollection.findAndModify({
+      query: {slackId: wasGivingTo},
+      update: {$unset: {receivingFrom: ""}}
+    },
+    function(err){
+      console.log('receiver unassigned');
+      req.login(user, function(err) {
+        if (err) return next(err)
+        res.redirect('/');
+      });
     });
   });
 });

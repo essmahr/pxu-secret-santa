@@ -4,15 +4,16 @@ var router = express.Router();
 var SlackApi = require('../models/SlackApi');
 var db = require('../db');
 var isAuthenticated = require('../isAuthenticated');
+var _ = require('lodash');
 
 /**
  * Simple admin view to administer who's allowed to participate
  */
 router.get('/', isAuthenticated, function(req, res) {
   var userCollection = db.get('users');
-  userCollection.find({slackId: {$ne: req.user.slackId}}, function(err, users){
+  userCollection.find({}, function(err, users){
     if (users) {
-      res.render('admin', {users: users});
+      res.render('admin', {teamMembers: users});
     } else {
       res.json(err);
     }
@@ -27,21 +28,49 @@ router.post('/update', isAuthenticated, function(req, res) {
   var userCollection = db.get('users');
   var participants = req.body.users;
 
+  participants = _.isArray(participants) ? participants : [participants];
+
   // set the yesses
   userCollection.update(
     {slackId: {$in: participants}},
     {$set: {participating: true}},
-    {multi: true}
+    {multi: true},
+    function(err) {
+      if (err) console.log(err);
+    }
   );
 
   // set the nos
   userCollection.update(
     {slackId: {$nin: participants}},
     {$set: {participating: false}},
-    {multi: true}
+    {multi: true},
+    function(err) {
+      if (err) console.log(err);
+    }
   );
 
   res.redirect('/admin');
+});
+
+router.get('/reset', isAuthenticated, function(req, res) {
+  var userCollection = db.get('users');
+
+  // set the yesses
+  userCollection.update(
+    {},
+    {
+      $unset: {
+        receivingFrom: "",
+        givingTo: ""
+      },
+    },
+    {multi: true},
+    function(err, users) {
+      if (err) console.log(err);
+      res.send('users reset.');
+    }
+  );
 });
 
 /**

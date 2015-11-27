@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  .assigned
+    img.assigned-img(src=givingTo.profilePic, alt=givingTo.full_name)
+    h2.assigned-name #{givingTo.first_name}!
+
+    .assigned-note
+      p What fun! If giving a gift to #{givingTo.first_name} involves the postal service, please have your gift ready to go by <strong>December 7th</strong>.
+
+      p
+        a.button.button-small(href='/') ok cool thanks

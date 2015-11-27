@@ -3,9 +3,11 @@ extends layout
 block content
   h2 Who is part of the secret santa?
   form.form-user-select(action="/admin/update", method="post")
-    each user in users
+    each teamMember in teamMembers
       .form-field
         label.form-label
-          input.input-checkbox(type="checkbox", name='users', value=user.slackId, checked=user.participating)
-          span.form-label-text= user.full_name
+          input.input-checkbox(type="checkbox", name='users', value=teamMember.slackId, checked=teamMember.participating disabled=(user.slackId === teamMember.slackId))
+          span.form-label-text= teamMember.full_name
+          if (user.slackId === teamMember.slackId)
+            small (you)
     button(type="submit") Save

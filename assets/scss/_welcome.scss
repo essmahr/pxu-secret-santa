@@ -3,18 +3,13 @@
 }
 
 .welcome-heading {
-  margin: 100px 0 8px;
+  margin: 40px 0 8px;
   font-weight: normal;
-  text-align: center;
 }
 
 .welcome-upper {
+  @extend %smallcaps;
   margin-bottom: 10px;
-  font-family: $serif;
-  font-size: 16px;
-  font-weight: normal;
-  letter-spacing: 0.5em;
-  text-transform: uppercase;
 }
 
 .welcome-text {
@@ -47,13 +42,8 @@
 }
 
 .welcome-subheader {
+  @extend %smallcaps;
   margin: 0 0 60px;
-  font-family: $serif;
-  font-size: 16px;
-  font-weight: normal;
-  letter-spacing: 0.5em;
-  text-align: center;
-  text-transform: uppercase;
 }
 
 .welcome-blurb {

@@ -106,7 +106,6 @@ passport.deserializeUser(function(user, done) {
 
 // attach user var to every request so we can access it in the templates
 app.use(function(req, res, next){
-  // console.log(req.user);
   res.locals.user = req.user;
   next();
 });
