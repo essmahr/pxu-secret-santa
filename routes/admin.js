@@ -64,6 +64,9 @@ router.get('/reset', isAuthenticated, function(req, res) {
         receivingFrom: "",
         givingTo: ""
       },
+      $set: {
+        optedOut: false,
+      }
     },
     {multi: true},
     function(err, users) {
@@ -90,6 +93,7 @@ router.get('/fetch-users', isAuthenticated, function(req, res) {
 
         // properties that are safe to be updated/overwritten
         var setOnUpdate = {
+          name: user.name,
           first_name: firstName,
           full_name: fullName,
           profilePic: user.profile.image_512
@@ -120,6 +124,16 @@ router.get('/fetch-users', isAuthenticated, function(req, res) {
       res.json(err);
     }
   });
+});
+
+/**
+ * Simple admin view to administer who's allowed to participate
+ */
+router.get('/dm', isAuthenticated, function(req, res) {
+  var slackApi = new SlackApi(req.user.accessToken);
+  slackApi.sendDeclineMsg(req.user, req.user, function(resp) {
+    res.json(resp);
+  })
 });
 
 module.exports = router;

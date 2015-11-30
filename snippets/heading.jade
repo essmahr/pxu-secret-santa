@@ -1,6 +1,6 @@
 .welcome-header
   h1.welcome-heading
-    if !user.givingTo
+    if !user.givingTo && !user.optedOut
       .welcome-upper Welcome to the
     .welcome-text
       span P
@@ -27,5 +27,5 @@
       span n
       span t
       span a
-  if !user.givingTo
+  if !user.givingTo && !user.optedOut
     h2.welcome-subheader Online Companion App<sup>&#8482;</sup>

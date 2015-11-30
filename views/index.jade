@@ -6,6 +6,8 @@ block content
 
     if user.givingTo
       include ../snippets/already-assigned.jade
+    else if user.optedOut
+      include ../snippets/opted-out.jade
     else
       include ../snippets/welcome.jade
   else

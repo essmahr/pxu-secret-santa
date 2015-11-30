@@ -6,7 +6,7 @@ block content
     each teamMember in teamMembers
       .form-field
         label.form-label
-          input.input-checkbox(type="checkbox", name='users', value=teamMember.slackId, checked=teamMember.participating disabled=(user.slackId === teamMember.slackId))
+          input.input-checkbox(type="checkbox", name='users', value=teamMember.slackId, checked=(user.slackId === teamMember.slackId || teamMember.participating))
           span.form-label-text= teamMember.full_name
           if (user.slackId === teamMember.slackId)
             small (you)

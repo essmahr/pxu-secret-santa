@@ -58,8 +58,7 @@ router.get('/assign', isAuthenticated, function(req, res) {
 
   var query = {
     slackId: {
-      $ne: req.user.slackId, // neither themselves
-      $ne: 'U02KAN7ND' // nor Calvin
+      $nin: [req.user.slackId, 'U02KAN7ND'] // neither themselves nor Calvin
     },
     receivingFrom: { $exists: false }, // haven't already been assigned
     participating: true, // haven't been disabled by admin
@@ -70,36 +69,42 @@ router.get('/assign', isAuthenticated, function(req, res) {
   userCollection.find(query, function(err, availableUsers) {
     if (err) console.log(err);
 
-    // Kate Booton wants to cheat
-    if (req.user.slackId === 'U08SQAUDC') {
-      receiverId = 'U02KAN7ND';
+    if (availableUsers.length) {
+      // Kate Booton wants to cheat
+      if (req.user.slackId === 'U08SQAUDC') {
+        receiverId = 'U02KAN7ND';
+      } else {
+        var receiverId = _.sample(availableUsers).slackId;
+      }
+
+      // update current user
+      userCollection.findAndModify({
+        query: {_id: req.user._id},
+        update: {$set: {givingTo: receiverId}}
+      },
+      function(err, user) {
+        if (err) console.log(err);
+
+        // fetch their assigned user
+        userCollection.findAndModify({
+          query: { slackId: receiverId },
+          update: {$set: { receivingFrom: req.user.slackId}}
+        },
+        function(err, givingTo) {
+          res.render('giving-to', {givingTo: givingTo});
+        });
+      });
     } else {
-      var receiverId = _.sample(availableUsers).slackId;
+      res.render('alone');
     }
 
-    // update current user
-    userCollection.findAndModify({
-      query: {_id: req.user._id},
-      update: {$set: {givingTo: receiverId}}
-    },
-    function(err, user) {
-      if (err) console.log(err);
-
-      // fetch their assigned user
-      userCollection.findAndModify({
-        query: { slackId: receiverId },
-        update: {$set: { receivingFrom: req.user.slackId}}
-      },
-      function(err, givingTo) {
-        res.render('giving-to', {givingTo: givingTo});
-      });
     });
-  });
 });
 
 router.get('/decline', isAuthenticated, function(req, res) {
   var userCollection = db.get('users');
 
+  // opt out the current user
   userCollection.findAndModify({
     query: { _id: req.user._id },
     update: { $set: {
@@ -107,10 +112,40 @@ router.get('/decline', isAuthenticated, function(req, res) {
       participating: false
     } }
   },
-  function(err, user) {
+  function(err, decliningUser) {
     if (err) console.log(err);
 
-    res.render('decline');
+    // has someone already been assigned this user?
+    if (decliningUser.receivingFrom) {
+      receivingFrom = decliningUser.receivingFrom;
+
+      // update them so they're no long associated
+      userCollection.update(
+        { _id: decliningUser._id },
+        { $unset: {receivingFrom: ""} },
+        function(err) {
+          if (err) console.log(err);
+        }
+      );
+
+      // and re-update the user who was meant to give them a gift,
+      userCollection.findAndModify(
+        { slackId: receivingFrom},
+        { $unset: {givingTo: ""}},
+        function(err, orphanedUser) {
+          if (err) console.log(err);
+
+          // notify them that the other person declined
+          var slackApi = new SlackApi(orphanedUser.accessToken);
+          slackApi.sendDeclineMsg(orphanedUser, req.user, function(resp) {
+            console.log('decline message sent.');
+            res.render('decline');
+          });
+        }
+      );
+    } else {
+      res.render('decline');
+    }
   });
 });
 

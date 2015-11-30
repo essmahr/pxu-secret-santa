@@ -1,5 +1,6 @@
 var https = require('https');
 var querystring = require('querystring');
+var _ = require('lodash');
 
 function slackApi(token) {
   this.token = token;
@@ -60,7 +61,9 @@ slackApi.prototype.post = function(method, params, cb) {
 };
 
 slackApi.prototype.sendMessage = function(messageData, callback) {
-  messageData['username'] = "Secret Santa Bot";
+  messageData['username'] = "Secret Santa";
+  messageData['icon_emoji'] = ":santa:";
+
 
   this.post('chat.postMessage', messageData, function(response) {
     return callback(response);
@@ -77,7 +80,6 @@ slackApi.prototype.getUsers = function(callback) {
   })
 }
 
-
 slackApi.prototype.getUserByID = function(userId, callback) {
   this.post('users.info', {user: userId}, function(response) {
     if (response.ok) {
@@ -86,6 +88,18 @@ slackApi.prototype.getUserByID = function(userId, callback) {
       return callback('error');
     }
   })
+}
+
+slackApi.prototype.sendDeclineMsg = function(targetUser, subjectUser, callback) {
+  var _this = this;
+  var messageData = {
+    as_user: false,
+    channel: '@' + targetUser.name,
+    text: 'Hi! Sorry to interrupt, but it looks like ' + subjectUser.first_name + ' decided not to participate in the secret santa this year. Please visit <http://santa.pixelunion.net|santa.pixelunion.net> to be assigned a new person.'
+  }
+  _this.sendMessage(messageData, function(resp) {
+    return callback(resp);
+  });
 }
 
 module.exports = slackApi;

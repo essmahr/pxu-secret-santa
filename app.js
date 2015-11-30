@@ -47,7 +47,7 @@ app.use(flash());
 passport.use(new SlackStrategy({
     clientID: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
-    scope: ['channels:read', 'users:read'],
+    scope: ['channels:read', 'users:read', 'chat:write:bot'],
     callbackURL: '/auth/slack/callback',
     team: process.env.SLACK_TEAM_ID
   },

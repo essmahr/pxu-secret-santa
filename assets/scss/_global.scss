@@ -62,7 +62,10 @@ h3 {
   &:hover { border-color: #888; }
 }
 
-.button-small { padding: 5px 12px; }
+.button-small {
+  padding: 5px 12px;
+  font-size: 14px;
+}
 
 .logout {
   position: fixed;
