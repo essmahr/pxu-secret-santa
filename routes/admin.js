@@ -96,7 +96,7 @@ router.get('/fetch-users', isAuthenticated, function(req, res) {
           name: user.name,
           first_name: firstName,
           full_name: fullName,
-          profilePic: user.profile.image_512
+          profilePic: user.profile.image_192
         }
 
         // properties only to be applied for new entries

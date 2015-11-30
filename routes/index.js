@@ -149,4 +149,16 @@ router.get('/decline', isAuthenticated, function(req, res) {
   });
 });
 
+router.get('/forgot', isAuthenticated, function(req, res) {
+  var userCollection = db.get('users');
+
+  userCollection.findOne({ slackId: req.user.givingTo })
+    .on('success', function(user) {
+      res.render('forgot', {recipient: user.full_name});
+    })
+    .on('error', function(err) {
+      console.log(err);
+    });
+});
+
 module.exports = router;

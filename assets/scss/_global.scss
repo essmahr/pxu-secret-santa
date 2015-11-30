@@ -67,6 +67,13 @@ h3 {
   font-size: 14px;
 }
 
+.button-faded {
+  color: #888;
+  border-color: #ccc;
+
+  &:hover { border-color: darken(#ccc, 5%); }
+}
+
 .logout {
   position: fixed;
   right: 10px;
@@ -79,4 +86,80 @@ h3 {
   font-size: 14px;
   text-align: center;
   background: #fff;
+}
+
+
+// assignment
+
+.state-message {
+  margin-bottom: 10px;
+  font-family: $sans;
+  font-size: 24px;
+  font-weight: 600;
+  color: #aaa;
+}
+
+.small {
+  margin: 0 0 30px;
+  font-size: 14px;
+  color: #666;
+}
+
+.assigned-img {
+  width: 192px;
+  border-radius: 50%;
+  animation-name: image-pop;
+  animation-duration: 0.8s;
+}
+
+.assigned-name {
+  margin: 10px 0 60px;
+  font-family: $sans;
+  font-size: 36px;
+  font-weight: 600;
+  color: $green;
+  animation-name: slide-up;
+  animation-duration: 0.8s;
+  animation-delay: 0.7s;
+  animation-fill-mode: backwards;
+}
+
+.assigned-note {
+  max-width: 240px;
+  font-size: 13px;
+  animation-name: fade-in;
+  animation-duration: 0.6s;
+  animation-delay: 2s;
+  animation-fill-mode: backwards;
+}
+
+@keyframes image-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
