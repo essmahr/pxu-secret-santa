@@ -161,4 +161,31 @@ router.get('/forgot', isAuthenticated, function(req, res) {
     });
 });
 
+router.get('/status', function(req, res) {
+  var userCollection = db.get('users');
+
+  userCollection.find({
+      givingTo: {$exists: false},
+      receivingFrom: {$exists: true}
+    })
+    .on('success', function(receivingNotGiving) {
+      userCollection.find({
+        givingTo: {$exists: true},
+        receivingFrom: {$exists: false}
+      })
+      .on('success', function(givingNotReceiving){
+        res.render('status', {
+          givingNotReceiving: givingNotReceiving,
+          receivingNotGiving: receivingNotGiving
+        });
+      })
+      .on('error', function(err) {
+        console.log(err);
+      });
+    })
+    .on('error', function(err) {
+      console.log(err);
+    });
+});
+
 module.exports = router;
