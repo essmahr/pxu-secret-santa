@@ -1,84 +1,18 @@
 var express = require('express');
-var passport = require('passport');
 var router = express.Router();
-var SlackApi = require('../models/SlackApi');
 var db = require('../db');
 var isAuthenticated = require('../isAuthenticated');
 
-var userCollection = db.get('users');
 
 /**
  * list all users in DB, for debugging
  */
 router.get('/list', isAuthenticated, function(req, res) {
+  var userCollection = db.get('users');
+
   userCollection.find({}, function(err, users){
     res.json(users);
   });
 })
-
-/**
- * assign a santa person to a person
- */
-router.get('/assign', isAuthenticated, function(req, res) {
-
-  var query = {
-    slackId: { $ne: req.user.slackId }, // not themselves
-    givingTo: { $exists: false }, // haven't already been assigned
-    participating: true, // haven't been disabled by admin
-    optedOut: false // haven't opted out
-  }
-
-  userCollection.findOne(query, function(err, user) {
-    if (err) console.log(err);
-
-    userCollection.findAndModify({
-      query: { _id: req.user._id },
-      update: { $set: { givingTo: user.slackId } }
-    },
-    function(err, user) {
-      if (err) console.log(err);
-      if (user.length === 0) console.log('something went wrong');
-
-      req.login(user, function(err) {
-        if (err) return next(err)
-
-        console.log('user assigned');
-        res.redirect('/');
-      });
-    });
-  });
-});
-
-
-/**
- * unassign a santa person from a person
- * (dev only)
- */
-router.get('/unassign', isAuthenticated, function(req, res) {
-  var wasGivingTo = req.user.givingTo;
-
-  // remove giver relationship
-  userCollection.findAndModify({
-    query: { _id: req.user._id },
-    update: { $unset: { givingTo: "" } }
-  },
-  function(err, user) {
-    if (err) console.log(err);
-    console.log('giver unassigned');
-
-    // remove receiver relationship
-    userCollection.findAndModify({
-      query: {slackId: wasGivingTo},
-      update: {$unset: {receivingFrom: ""}}
-    },
-    function(err){
-      console.log('receiver unassigned');
-      req.login(user, function(err) {
-        if (err) return next(err)
-        res.redirect('/');
-      });
-    });
-  });
-});
 
 module.exports = router;

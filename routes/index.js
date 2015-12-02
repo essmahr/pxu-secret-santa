@@ -34,6 +34,9 @@ router.get('/logout', function(req, res) {
 
 //------------ Making decisions ------------//
 
+/**
+ * Don't assign someone just yet, but opt them in and show them the accept link
+ */
 router.get('/accept', isAuthenticated, function(req, res) {
   if (req.user.givingTo) { res.redirect('/'); }
 
@@ -50,6 +53,9 @@ router.get('/accept', isAuthenticated, function(req, res) {
   });
 });
 
+/**
+ * generate the gifter-giftee relationship
+ */
 router.get('/assign', isAuthenticated, function(req, res) {
   if (req.user.givingTo) { res.redirect('/'); }
 
@@ -101,6 +107,10 @@ router.get('/assign', isAuthenticated, function(req, res) {
     });
 });
 
+/**
+ * opt the user out
+ * TODO: users can theoretically visit this link after optin in and things get weird
+ */
 router.get('/decline', isAuthenticated, function(req, res) {
   var userCollection = db.get('users');
 
@@ -149,6 +159,9 @@ router.get('/decline', isAuthenticated, function(req, res) {
   });
 });
 
+/**
+ * fetch and display a user's giftee
+ */
 router.get('/forgot', isAuthenticated, function(req, res) {
   var userCollection = db.get('users');
 
@@ -161,6 +174,9 @@ router.get('/forgot', isAuthenticated, function(req, res) {
     });
 });
 
+/**
+ * show an anonymous summary of how many people have yet to be assigned
+ */
 router.get('/status', function(req, res) {
   var userCollection = db.get('users');
 

@@ -22,7 +22,6 @@ router.get('/', isAuthenticated, function(req, res) {
 
 /**
  * updating above settings
- * TODO: there is maybe a better way than two updates, maybe not
  */
 router.post('/update', isAuthenticated, function(req, res) {
   var userCollection = db.get('users');
@@ -53,6 +52,10 @@ router.post('/update', isAuthenticated, function(req, res) {
   res.redirect('/admin');
 });
 
+/**
+ * FOR DEV/DEBUG ONLY
+ * reset all user-to-user gifting relationships
+ */
 router.get('/reset', isAuthenticated, function(req, res) {
   var userCollection = db.get('users');
 
@@ -77,7 +80,8 @@ router.get('/reset', isAuthenticated, function(req, res) {
 });
 
 /**
- * populate DB with Slack users
+ * populate DB with Slack users.
+ * Should only be run once on project init
  */
 router.get('/fetch-users', isAuthenticated, function(req, res) {
   var userCollection = db.get('users');
@@ -127,7 +131,8 @@ router.get('/fetch-users', isAuthenticated, function(req, res) {
 });
 
 /**
- * Simple admin view to administer who's allowed to participate
+ * FOR DEV/DEBUG ONLY
+ * send yourself the Bot dm. Why not, right?
  */
 router.get('/dm', isAuthenticated, function(req, res) {
   var slackApi = new SlackApi(req.user.accessToken);
